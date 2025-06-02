@@ -7,18 +7,25 @@
 <body>
   <h2>Guess the 5-letter word</h2>
   <form method="POST">
-    <input name="guess" maxlength="5" required>
+    <input name="guess" maxlength="5" minlength="5" required>
     <button type="submit">Submit</button>
   </form>
 
   <ul>
     {% for guess, feedback in attempts %}
-      <li>{{ guess.upper() }} → {{ feedback }}</li>
+      <h2>{{ guess.upper() }}</h2>
+      <h2>{{ feedback }}</h2>
 
     {% endfor %}
   </ul>
 
-  <h2>All of this character wrong </h2> 
+
+  <h3>All of this character wrong </h3> 
+  <ul>
+    {% for char in charinvalid %}
+      <li>{{ char.upper() }}</li>
+    {% endfor %}
+  </ul>
 
 
 </body>
