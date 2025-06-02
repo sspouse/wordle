@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head><title>Result</title></head>
+<body>
+  {% if status == 'success' %}
+    <h1>🎉 Correct! The word was {{ word.upper() }}</h1>
+  {% else %}
+    <h1>❌ You lost! The word was {{ word.upper() }}</h1>
+  {% endif %}
+  <a href="{{ url_for('start_game') }}"><button>Next Word</button></a>
+</body>
+</html>

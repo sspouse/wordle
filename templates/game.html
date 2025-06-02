@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Play Wordle</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h2>Guess the 5-letter word</h2>
+  <form method="POST">
+    <input name="guess" maxlength="5" required>
+    <button type="submit">Submit</button>
+  </form>
+
+  <ul>
+    {% for guess, feedback in attempts %}
+      <li>{{ guess.upper() }} → {{ feedback }}</li>
+
+    {% endfor %}
+  </ul>
+
+  <h2>All of this character wrong </h2> 
+
+
+</body>
+</html>
