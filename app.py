@@ -17,6 +17,7 @@ def start_game():
     session['target'] = random.choice(word_list)
     session['attempts'] = []
     session['invalidchar'] = []
+    session['validchar'] = [] 
     return redirect(url_for('game'))
 
 @app.route('/game', methods=['GET', 'POST'])
@@ -24,6 +25,7 @@ def game():
     target = session.get('target')
     attempts = session.get('attempts', [])
     invalidchar = session.get('invalidchar')
+    validchar = session.get('validchar')
 
     if request.method == 'POST':
         guess = request.form['guess'].lower()
@@ -31,19 +33,25 @@ def game():
         attempts.append((guess, feedback))
         session['attempts'] = attempts
 
-        charinvalid = get_invalid(guess,target)
+        charinvalid, charvalid = get_invalid(guess,target)
         for c in charinvalid:
             print('c : ',c)
             if c not in invalidchar:
                 invalidchar.append(c)
         session['invalidchar'] = invalidchar
+        for c in charvalid:
+            print('c : ',c)
+            if c not in validchar:
+                validchar.append(c)
+        session['validchar'] = validchar
+
 
         if guess == target:
             return redirect(url_for('result', status='success'))
         elif len(attempts) >= 6:
             return redirect(url_for('result', status='fail'))
 
-    return render_template('game.html', attempts=attempts,charinvalid=invalidchar)
+    return render_template('game.html', attempts=attempts,charinvalid=invalidchar,charvalid=validchar)
 
 @app.route('/result/<status>')
 def result(status):
@@ -64,12 +72,16 @@ def get_feedback(guess, target):
 
 def get_invalid(guess, target):
     invalid = []
+    valid = [] 
     for i, c in enumerate(guess):
         if c != target[i] and c not in target:
             if c not in invalid:
                 invalid.append(c)
-    print('invalid check : ', invalid)
-    return invalid
+        else :
+            if c not in valid:
+                valid.append(c)
+    
+    return invalid,valid
 
 
 

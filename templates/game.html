@@ -22,7 +22,14 @@
 
   <h3>All of this character wrong </h3> 
   <ul>
-    {% for char in charinvalid %}
+    {% for char in charinvalid%}
+      <li>{{ char.upper() }}</li>
+    {% endfor %}
+  </ul>
+
+  <h3>All of this character correct </h3> 
+  <ul>
+    {% for char in charvalid%}
       <li>{{ char.upper() }}</li>
     {% endfor %}
   </ul>
