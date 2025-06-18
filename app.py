@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import random
 import json
-from nltk_words import get_word_list
+from words import get_word_list
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key'
