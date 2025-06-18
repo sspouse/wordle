@@ -1,90 +1,82 @@
 /* style.css */
 
 :root {
-    /* กำหนดสีที่ใช้บ่อย เพื่อความง่ายในการแก้ไขและควบคุม */
-    --color-background: #6b98fd; /* สีพื้นหลังเข้มๆ */
-    --color-text-light: #f8f8f8; /* สีข้อความสว่าง */
-    --color-tile-border: #faa4cf; /* สีขอบช่องว่าง */
-    --color-tile-empty: #ffffff; /* สีช่องว่าง */
-    --color-tile-filled: #faa4cf; /* สีช่องที่มีตัวอักษร */
-    --color-key-background: #6b98fd; /* สีปุ่มคีย์บอร์ดปกติ */
-    --color-key-text: white; /* สีข้อความบนปุ่ม */
+    /* Define frequently used colors for easy modification and control */
+    --color-background: #6b98fd; /* Dark background color */
+    --color-text-light: #f8f8f8; /* Light text color */
+    --color-tile-border: #faa4cf; /* Empty tile border color */
+    --color-tile-empty: #ffffff; /* Empty tile color */
+    --color-tile-filled: #faa4cf; /* Filled tile color */
+    --color-key-background: #6b98fd; /* Normal keyboard key background color */
+    --color-key-text: white; /* Key text color */
 
     /* Wordle Specific Colors */
-    --color-correct: #8eda8a; /* สีเขียว (ถูกต้อง, ตำแหน่งถูก) */
-    --color-present: #fbe554; /* สีเหลือง (มีอยู่ในคำ, ตำแหน่งผิด) */
-    --color-absent: white; /* สีเทา (ไม่มีอยู่ในคำ) */
+    --color-correct: #8eda8a; /* Green (correct, correct position) */
+    --color-present: #fbe554; /* Yellow (in word, wrong position) */
+    --color-absent: white; /* Gray (not in word) */
 }
 
 body {
-    font-family: 'Arial', sans-serif; /* ฟอนต์ที่ดูสะอาดตา */
+    font-family: 'Arial', sans-serif; /* Clean font */
     background-color: var(--color-background);
     color: var(--color-text-light);
-    display: flex; /* ใช้ flexbox จัดกึ่งกลางหน้าจอ */
+    display: flex; /* Use flexbox to center content */
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* ความสูงเต็มจอ */
+    min-height: 100vh; /* Full viewport height */
     margin: 0;
-    padding: 20px; /* เว้นขอบเล็กน้อย */
-    box-sizing: border-box; /* ทำให้ padding ไม่เพิ่มขนาดรวมของ element */
+    padding: 20px; /* Small padding around the edges */
+    box-sizing: border-box; /* Ensures padding doesn't increase total element size */
 }
 
 .container {
     display: flex;
-    flex-direction: column; /* จัดเรียงองค์ประกอบเป็นแนวตั้ง */
-    align-items: center; /* จัดกึ่งกลางตามแนวนอน */
-    max-width: 480px; /* กำหนดความกว้างสูงสุดของเกม */
+    flex-direction: column; /* Arrange elements vertically */
+    align-items: center; /* Center horizontally */
+    max-width: 480px; /* Set max width for the game */
     width: 100%;
     padding: 20px;
-    background-color: #fcf0e0; /* สีพื้นหลังของ container */
+    background-color: #fcf0e0; /* Container background color */
     border: 5px solid;
-    border-radius: 40px; /* ขอบโค้งมน */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* เงาเล็กน้อย */
+    border-radius: 40px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slight shadow */
 }
 
 h1 {
     font-size: 2.5em;
     margin-bottom: 20px;
     color: var(--color-background);
-    text-transform: uppercase; /* ตัวพิมพ์ใหญ่ทั้งหมด */
+    text-transform: uppercase; /* All caps */
     letter-spacing: 2px;
 }
 
 /* --- Game Board Styles --- */
 #game-board {
     display: grid;
-    grid-template-rows: repeat(6, 1fr); /* 6 แถว */
-    gap: 7px; /* ช่องว่างระหว่างแถว */
+    grid-template-rows: repeat(6, 1fr); /* 6 rows */
+    gap: 7px; /* Gap between rows */
     margin-bottom: 20px;
-    width: 80%; /* ให้บอร์ดกว้างเต็ม container */
-    max-width: 350px; /* ควบคุมขนาดบอร์ด */
+    width: 80%; /* Board takes full container width */
+    max-width: 350px; /* Control board size */
 }
 
 .row {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); /* 5 ช่องต่อแถว */
-    gap: 8px; /* ช่องว่างระหว่างช่องในแถว */
+    grid-template-columns: repeat(5, 1fr); /* 5 columns per row */
+    gap: 8px; /* Gap between tiles in a row */
 }
 
 .tile {
-    /* *** ลบ 2 บรรทัดนี้ออก *** */
-    /* height: 0; */
-    /* padding-bottom: 100%; */
-    /* ********************** */
-
-    /* *** เพิ่ม 2 บรรทัดนี้แทน *** */
     width: 100%;
-    aspect-ratio: 1 / 1; /* ทำให้ความสูงเท่ากับความกว้างเสมอ (สี่เหลี่ยมจัตุรัส) */
-    /* หรือถ้าไม่รองรับ aspect-ratio ให้ใช้ height: 60px; (หรือขนาดที่คุณต้องการ) */
-    /* height: 60px; */ /* ตัวอย่าง: กำหนดความสูงตายตัว ถ้า aspect-ratio ไม่ทำงาน */
-    /* **************************** */
-
+    aspect-ratio: 1 / 1; /* Keep height equal to width (square) */
+    /* Alternative if aspect-ratio is not supported: height: 60px; (or your desired size) */
+    /* height: 60px; */ /* Example: fixed height if aspect-ratio doesn't work */
+    
     background-color: var(--color-tile-empty);
-/*    border: 2px solid var(--color-tile-border);*/
 
     display: flex;
-    justify-content: center; /* จัดเนื้อหาในแนวนอนให้อยู่กึ่งกลาง */
-    align-items: center;   /* จัดเนื้อหาในแนวตั้งให้อยู่กึ่งกลาง */
+    justify-content: center; /* Center content horizontally */
+    align-items: center;    /* Center content vertically */
 
     font-size: 2em;
     font-weight: bold;
@@ -95,49 +87,47 @@ h1 {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* เพิ่ม Media Query สำหรับปรับขนาด font-size ของ Tile บนมือถือ */
+/* Media Query for adjusting Tile font-size on mobile */
 @media (max-width: 600px) {
     .tile {
-        font-size: 1.5em; /* ลดขนาด font-size ลงมาเล็กน้อย */
-        /* ถ้าใช้ height: 60px; อาจจะต้องปรับ height ด้วย */
+        font-size: 1.5em; /* Slightly reduce font-size */
+        /* If using height: 60px; you might need to adjust height as well */
         /* height: 50px; */
     }
 }
 
-/* @media (max-width: 400px) { ... } ก็อาจจะต้องปรับ font-size ใน .tile ด้วย */
-
-/* สไตล์เมื่อช่องมีตัวอักษร */
+/* Style when a tile has a letter */
 .tile.filled {
     background-color: var(--color-tile-filled);
     border-color: var(--color-tile-filled);
 }
 
-/* สไตล์เมื่อตัวอักษรถูกต้อง (ตำแหน่งถูก) */
+/* Style when a letter is correct (correct position) */
 .tile.correct {
     background-color: var(--color-correct);
-    color: #5bb253; 
+    color: #5bb253; /* Text color for correct */
     border: 4px solid;
     border-color: #5bb253;
 }
 
-/* สไตล์เมื่อตัวอักษรมีอยู่ในคำแต่ผิดตำแหน่ง */
+/* Style when a letter is in the word but wrong position */
 .tile.present {
     background-color: var(--color-present);
-    color: #feae2a;
+    color: #feae2a; /* Text color for present */
     border: 4px solid;
     border-color: #feae2a;
 }
 
-/* สไตล์เมื่อตัวอักษรไม่มีอยู่ในคำ */
+/* Style when a letter is not in the word */
 .tile.absent {
     background-color: var(--color-absent);
     border-color: var(--color-absent);
-    color: #e3e3e3;
+    color: #e3e3e3; /* Text color for absent */
 }
 
 /* Animation for flipping tiles (optional, but nice) */
 .tile.flip {
-    transform: rotateX(360deg); /* หรือ 180deg แล้วค่อยเปลี่ยนสี */
+    transform: rotateX(360deg); /* Or 180deg then change color */
 }
 
 
@@ -146,14 +136,14 @@ h1 {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 10px; /* ช่องว่างระหว่างแถวคีย์บอร์ด */
+    gap: 10px; /* Gap between keyboard rows */
     align-items: center;
     margin-top: 20px;
 }
 
 .keyboard-row {
     display: flex;
-    gap: 6px; /* ช่องว่างระหว่างปุ่ม */
+    gap: 6px; /* Gap between keys */
     justify-content: center;
     width: 100%;
 }
@@ -167,35 +157,30 @@ h1 {
     font-weight: bold;
     padding: 13px 10px;
     cursor: pointer;
-    flex: 1; /* ทำให้ปุ่มขยายเต็มพื้นที่เท่าๆ กัน */
-    min-width: 30px; /* ขนาดต่ำสุดของปุ่ม */
+    flex: 1; /* Make buttons expand equally */
+    min-width: 30px; /* Minimum button size */
     transition: background-color 0.2s ease, transform 0.1s ease;
-    text-transform: uppercase; /* ตัวพิมพ์ใหญ่ */
+    text-transform: uppercase; /* All caps */
     text-align: center;
 }
 
 .key:hover {
-    background-color: #9c9da0; /* สีเข้มขึ้นเมื่อ hover */
+    background-color: #9c9da0; /* Darker color on hover */
 }
 
 .key:active {
-    transform: translateY(1px); /* กดแล้วดูเหมือนยุบลงเล็กน้อย */
+    transform: translateY(1px); /* Slight depression on click */
 }
 
-.key.submit-key {
-    background-color: var(--color-tile-filled);
-    display: flex; 
-    padding: 13px 36px;
-    justify-content: center; 
-}
-
+.key.submit-key,
 .key.large-key {
-    display: flex; 
+    background-color: var(--color-tile-filled);
+    display: flex;
     padding: 13px 36px;
-    justify-content: center; 
+    justify-content: center;
 }
 
-/* สไตล์ปุ่มคีย์บอร์ดเมื่อตัวอักษรถูกต้อง/มี/ไม่มี */
+/* Keyboard button styles when letters are correct/present/absent */
 .key.correct {
     background-color: #5bb253;
     color: white;
@@ -212,7 +197,7 @@ h1 {
 /* --- Message Container --- */
 #message-container {
     margin-top: 20px;
-    min-height: 40px; /* กำหนดความสูงขั้นต่ำเพื่อป้องกันการกระโดดของเลย์เอาต์ */
+    min-height: 40px; /* Set minimum height to prevent layout jumping */
     font-size: 1.2em;
     font-weight: bold;
     text-align: center;

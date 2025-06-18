@@ -1,6 +1,6 @@
 // script.js
 
-// --- ตัวแปรและค่าคงที่เบื้องต้น ---
+// --- Initial Variables and Constants ---
 const TILE_COUNT = 5;
 const ROW_COUNT = 6;
 
@@ -8,67 +8,67 @@ let currentRow = 0;
 let currentCol = 0;
 
 let currentGuess = [];
-let wordOfTheDay = ""; // กำหนดให้ว่างไว้ก่อน เพราะจะโหลดจาก JSON
-let wordList = {};    // Object สำหรับเก็บคำศัพท์จาก JSON
+let wordOfTheDay = ""; // Will be loaded from JSON
+let wordList = {};    // Object to store words from JSON
 
 const gameBoard = document.getElementById('game-board');
 const keyboardContainer = document.getElementById('keyboard-container');
 const messageContainer = document.getElementById('message-container');
 
-// --- NEW: ฟังก์ชันสำหรับโหลด Word List จากไฟล์ JSON ---
+// --- NEW: Function to load Word List from JSON file ---
 async function loadWordList() {
     try {
-        const response = await fetch('static/wordlist.json'); // ใช้ fetch API เพื่อโหลดไฟล์
+        const response = await fetch('static/wordlist.json'); // Use fetch API to load the file
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        wordList = await response.json(); // แปลง response เป็น JSON object
+        wordList = await response.json(); // Convert response to JSON object
         console.log("Word list loaded successfully:", wordList);
 
-        // หลังจากโหลดเสร็จ ค่อยเรียก initializeGame
+        // After loading, call initializeGame
         initializeGame();
     } catch (error) {
         console.error("Error loading word list:", error);
-        showMessage("เกิดข้อผิดพลาดในการโหลดคำศัพท์", false);
+        showMessage("Error loading word list", false);
     }
 }
 
-// --- ฟังก์ชันเริ่มต้นเกม (มีการแก้ไข) ---
+// --- Game Initialization Function (modified) ---
 function initializeGame() {
-    // กรองคำศัพท์ที่มีความยาวเท่ากับ TILE_COUNT (เช่น 5 ตัวอักษร)
+    // Filter words with length equal to TILE_COUNT (e.g., 5 characters)
     const fiveLetterWords = Object.keys(wordList).filter(word => word.length === TILE_COUNT);
 
     if (fiveLetterWords.length > 0) {
-        // สุ่มเลือกคำจากลิสต์ที่กรองแล้ว
+        // Randomly select a word from the filtered list
         const randomIndex = Math.floor(Math.random() * fiveLetterWords.length);
         wordOfTheDay = fiveLetterWords[randomIndex].toUpperCase();
-        console.log("คำตอบวันนี้คือ:", wordOfTheDay);
+        console.log("Today's word is:", wordOfTheDay);
     } else {
-        console.warn("ไม่พบคำศัพท์ 5 ตัวอักษรใน wordlist.json!");
-        wordOfTheDay = "APPLE"; // fallback word หากไม่มีคำในลิสต์
+        console.warn("No 5-letter words found in wordlist.json!");
+        wordOfTheDay = "APPLE"; // fallback word if no words in list
     }
 
-    // รีเซ็ตสถานะเกมสำหรับเกมใหม่
+    // Reset game state for a new game
     currentRow = 0;
     currentCol = 0;
     currentGuess = [];
 
-    // ล้างกระดานและรีเซ็ตสีปุ่มคีย์บอร์ด
+    // Clear the board and reset keyboard button colors
     resetGameBoard();
     resetKeyboardColors();
 }
 
-// --- NEW: ฟังก์ชันสำหรับล้างกระดาน (เมื่อเริ่มเกมใหม่) ---
+// --- NEW: Function to clear the game board (for a new game) ---
 function resetGameBoard() {
     const tiles = document.querySelectorAll('.tile');
     tiles.forEach(tile => {
         tile.textContent = '';
         tile.classList.remove('filled', 'correct', 'present', 'absent');
     });
-    messageContainer.textContent = ''; // ล้างข้อความแจ้งเตือน
+    messageContainer.textContent = ''; // Clear notification messages
 }
 
-// --- NEW: ฟังก์ชันสำหรับรีเซ็ตสีปุ่มคีย์บอร์ด (เมื่อเริ่มเกมใหม่) ---
+// --- NEW: Function to reset keyboard button colors (for a new game) ---
 function resetKeyboardColors() {
     const keys = document.querySelectorAll('.key');
     keys.forEach(key => {
@@ -76,7 +76,7 @@ function resetKeyboardColors() {
     });
 }
 
-// --- ฟังก์ชันจัดการการพิมพ์ตัวอักษร (คงเดิม) ---
+// --- Function to handle letter input (unchanged) ---
 function addLetterToTile(letter) {
     if (currentCol < TILE_COUNT) {
         const tile = gameBoard.querySelector(`.row:nth-child(${currentRow + 1}) .tile:nth-child(${currentCol + 1})`);
@@ -87,7 +87,7 @@ function addLetterToTile(letter) {
     }
 }
 
-// --- ฟังก์ชันจัดการการลบตัวอักษร (Backspace) (คงเดิม) ---
+// --- Function to handle backspace (unchanged) ---
 function deleteLetter() {
     if (currentCol > 0) {
         currentCol--;
@@ -98,7 +98,7 @@ function deleteLetter() {
     }
 }
 
-// --- ฟังก์ชันแสดงข้อความแจ้งเตือน (คงเดิม) ---
+// --- Function to display messages (unchanged) ---
 function showMessage(message, isTemporary = false) {
     messageContainer.textContent = message;
     if (isTemporary) {
@@ -108,7 +108,7 @@ function showMessage(message, isTemporary = false) {
     }
 }
 
-// --- ฟังก์ชันตรวจสอบคำทายและอัปเดตสีช่อง (Tile Colors) (คงเดิม) ---
+// --- Function to check guess and update tile colors (unchanged) ---
 function updateTileColors(guessWord) {
     const correctWord = wordOfTheDay.toUpperCase();
     const guessLetters = guessWord.toUpperCase().split('');
@@ -121,31 +121,31 @@ function updateTileColors(guessWord) {
 
     const usedLetters = {};
 
-    // 1. ตรวจสอบหา 'correct' (สีเขียว) ก่อน
+    // 1. Check for 'correct' (green) first
     for (let i = 0; i < TILE_COUNT; i++) {
         const tile = gameBoard.querySelector(`.row:nth-child(${currentRow + 1}) .tile:nth-child(${i + 1})`);
         const guessedChar = guessLetters[i];
 
         if (guessedChar === correctLetters[i]) {
             tile.classList.add('correct');
-            const keyElement = keyboardContainer.querySelector(`.key[data-key="${guessedChar}"]`); // หาปุ่มด้วย data-key
+            const keyElement = keyboardContainer.querySelector(`.key[data-key="${guessedChar}"]`); // Find key by data-key
             if (keyElement) {
-                // ถ้ามีสีเขียวแล้ว ไม่ต้องเปลี่ยน
+                // If already green, no need to change
                 if (!keyElement.classList.contains('correct')) {
                     keyElement.classList.add('correct');
-                    keyElement.classList.remove('present', 'absent'); // ลบสีอื่นออก
+                    keyElement.classList.remove('present', 'absent'); // Remove other colors
                 }
             }
             usedLetters[guessedChar] = (usedLetters[guessedChar] || 0) + 1;
         }
     }
 
-    // 2. ตรวจสอบหา 'present' (สีเหลือง) และ 'absent' (สีเทา)
+    // 2. Check for 'present' (yellow) and 'absent' (gray)
     for (let i = 0; i < TILE_COUNT; i++) {
         const tile = gameBoard.querySelector(`.row:nth-child(${currentRow + 1}) .tile:nth-child(${i + 1})`);
         const guessedChar = guessLetters[i];
 
-        if (!tile.classList.contains('correct')) { // ถ้าช่องนี้ยังไม่มีสีเขียว
+        if (!tile.classList.contains('correct')) { // If this tile is not already green
             if (correctLetters.includes(guessedChar) && (usedLetters[guessedChar] || 0) < (correctLetterCounts[guessedChar] || 0)) {
                 tile.classList.add('present');
                 const keyElement = keyboardContainer.querySelector(`.key[data-key="${guessedChar}"]`);
@@ -170,30 +170,30 @@ function updateTileColors(guessWord) {
 }
 
 
-// --- ฟังก์ชันจัดการการกด Enter (ส่งคำทาย) (มีการแก้ไขเล็กน้อย) ---
+// --- Function to handle Enter key (submit guess) (slightly modified) ---
 function handleEnter() {
     if (currentCol !== TILE_COUNT) {
-        showMessage("กรุณาพิมพ์ตัวอักษรให้ครบ 5 ตัว", true);
+        showMessage("Please enter 5 letters", true);
         return;
     }
 
     const guessWord = currentGuess.join('').toUpperCase();
-    // *** NEW: ตรวจสอบว่าคำที่ทายเป็นคำที่ถูกต้องใน wordList หรือไม่ (ถ้าต้องการ) ***
-    // (ตอนนี้แค่ตรวจสอบความยาว แต่คุณอาจจะเพิ่ม Object.keys(wordList).includes(guessWord) ได้)
+    // *** NEW: Check if the guessed word is a valid word in wordList (if desired) ***
+    // (Currently only checks length, but you can add Object.keys(wordList).includes(guessWord) for validity)
     if (!Object.keys(wordList).includes(guessWord.toLowerCase())) {
-        showMessage("ไม่พบคำนี้ในพจนานุกรมของเรา", true);
-        return; // หยุดการทำงานถ้าคำทายไม่ถูกต้อง
+        showMessage("Word not found in our dictionary", true);
+        return; // Stop execution if the guess is not valid
     }
 
 
-    updateTileColors(guessWord); // อัปเดตสีของช่องตัวอักษร
+    updateTileColors(guessWord); // Update tile colors
 
     if (guessWord === wordOfTheDay) {
-        showMessage(`ยอดเยี่ยม! คุณทายถูกแล้ว!\nคำว่า "${wordOfTheDay}" หมายถึง : ${wordList[wordOfTheDay.toLowerCase()]}`);
-        // อาจจะปิดการใช้งานคีย์บอร์ด หรือแสดงปุ่มเล่นใหม่
-        // เพิ่มปุ่ม "เล่นใหม่"
+        showMessage(`Excellent! You guessed it!\nThe word "${wordOfTheDay}" means: ${wordList[wordOfTheDay.toLowerCase()]}`);
+        // Potentially disable keyboard or show play again button
+        // Add "Play again" button
         setTimeout(() => {
-            if (!document.getElementById('restart-button')) { // ป้องกันสร้างซ้ำ
+            if (!document.getElementById('restart-button')) { // Prevent creating duplicates
                 const restartButton = document.createElement('button');
                 restartButton.textContent = 'Play again';
                 restartButton.id = 'restart-button';
@@ -206,9 +206,9 @@ function handleEnter() {
                 restartButton.style.borderRadius = '20px';
                 restartButton.style.cursor = 'pointer';
                 restartButton.addEventListener('click', initializeGame);
-                messageContainer.after(restartButton); // แสดงปุ่มหลัง message container
+                messageContainer.after(restartButton); // Show button after message container
             }
-        }, 1000); // หน่วงเวลาเล็กน้อย
+        }, 1000); // Small delay
         return;
     }
 
@@ -217,8 +217,8 @@ function handleEnter() {
     currentGuess = [];
 
     if (currentRow >= ROW_COUNT) {
-        showMessage(`จบเกมแล้ว! คำตอบคือ "${wordOfTheDay}"\nคำว่า "${wordOfTheDay}" หมายถึง : ${wordList[wordOfTheDay.toLowerCase()]}`);
-        // เพิ่มปุ่ม "เล่นใหม่"
+        showMessage(`Game over! The word was "${wordOfTheDay}"\nThe word "${wordOfTheDay}" means: ${wordList[wordOfTheDay.toLowerCase()]}`);
+        // Add "Play again" button
         setTimeout(() => {
             if (!document.getElementById('restart-button')) {
                 const restartButton = document.createElement('button');
@@ -227,7 +227,7 @@ function handleEnter() {
                 restartButton.style.marginTop = '10px';
                 restartButton.style.padding = '10px 20px';
                 restartButton.style.fontSize = '1.5em';
-                restartButton.style.backgroundColor = 'var(--color-background)'; // สีเทา
+                restartButton.style.backgroundColor = 'var(--color-background)'; // Gray color
                 restartButton.style.color = 'white';
                 restartButton.style.border = 'none';
                 restartButton.style.borderRadius = '20px';
@@ -239,7 +239,7 @@ function handleEnter() {
     }
 }
 
-// --- Event Listener สำหรับปุ่มคีย์บอร์ด (คงเดิม) ---
+// --- Event Listener for keyboard buttons (unchanged) ---
 const keys = document.querySelectorAll('.key');
 
 keys.forEach(key => {
@@ -260,12 +260,12 @@ keys.forEach(key => {
         } else if (clickedKey === "<") {
             deleteLetter();
         } else if (clickedKey.length === 1 && /^[a-zA-Z]+$/.test(clickedKey)) {
-            addLetterToTile(clickedKey.toUpperCase()); 
+            addLetterToTile(clickedKey.toUpperCase());
         }
     });
 });
-     
-// --- Event Listener สำหรับการพิมพ์จากคีย์บอร์ดจริง (คงเดิม) ---
+      
+// --- Event Listener for real keyboard input (unchanged) ---
 document.addEventListener('keydown', (event) => {
     const key = event.key;
 
@@ -278,5 +278,5 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-// --- เรียกฟังก์ชันโหลดคำศัพท์เมื่อ DOM โหลดเสร็จแล้ว ---
-document.addEventListener('DOMContentLoaded', loadWordList); // เปลี่ยนจาก initializeGame เป็น loadWordList
+// --- Call the word list loading function when DOM is fully loaded ---
+document.addEventListener('DOMContentLoaded', loadWordList); // Changed from initializeGame to loadWordList
