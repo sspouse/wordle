@@ -1,8 +1,257 @@
-body {
-  font-family: sans-serif;
-  padding: 20px;
+/* style.css */
+
+:root {
+    /* กำหนดสีที่ใช้บ่อย เพื่อความง่ายในการแก้ไขและควบคุม */
+    --color-background: #6b98fd; /* สีพื้นหลังเข้มๆ */
+    --color-text-light: #f8f8f8; /* สีข้อความสว่าง */
+    --color-tile-border: #faa4cf; /* สีขอบช่องว่าง */
+    --color-tile-empty: #ffffff; /* สีช่องว่าง */
+    --color-tile-filled: #faa4cf; /* สีช่องที่มีตัวอักษร */
+    --color-key-background: #6b98fd; /* สีปุ่มคีย์บอร์ดปกติ */
+    --color-key-text: white; /* สีข้อความบนปุ่ม */
+
+    /* Wordle Specific Colors */
+    --color-correct: #8eda8a; /* สีเขียว (ถูกต้อง, ตำแหน่งถูก) */
+    --color-present: #fbe554; /* สีเหลือง (มีอยู่ในคำ, ตำแหน่งผิด) */
+    --color-absent: white; /* สีเทา (ไม่มีอยู่ในคำ) */
 }
-button {
-  padding: 10px;
-  font-size: 16px;
+
+body {
+    font-family: 'Arial', sans-serif; /* ฟอนต์ที่ดูสะอาดตา */
+    background-color: var(--color-background);
+    color: var(--color-text-light);
+    display: flex; /* ใช้ flexbox จัดกึ่งกลางหน้าจอ */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* ความสูงเต็มจอ */
+    margin: 0;
+    padding: 20px; /* เว้นขอบเล็กน้อย */
+    box-sizing: border-box; /* ทำให้ padding ไม่เพิ่มขนาดรวมของ element */
+}
+
+.container {
+    display: flex;
+    flex-direction: column; /* จัดเรียงองค์ประกอบเป็นแนวตั้ง */
+    align-items: center; /* จัดกึ่งกลางตามแนวนอน */
+    max-width: 480px; /* กำหนดความกว้างสูงสุดของเกม */
+    width: 100%;
+    padding: 20px;
+    background-color: #fcf0e0; /* สีพื้นหลังของ container */
+    border: 5px solid;
+    border-radius: 40px; /* ขอบโค้งมน */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* เงาเล็กน้อย */
+}
+
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: var(--color-background);
+    text-transform: uppercase; /* ตัวพิมพ์ใหญ่ทั้งหมด */
+    letter-spacing: 2px;
+}
+
+/* --- Game Board Styles --- */
+#game-board {
+    display: grid;
+    grid-template-rows: repeat(6, 1fr); /* 6 แถว */
+    gap: 7px; /* ช่องว่างระหว่างแถว */
+    margin-bottom: 20px;
+    width: 80%; /* ให้บอร์ดกว้างเต็ม container */
+    max-width: 350px; /* ควบคุมขนาดบอร์ด */
+}
+
+.row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 ช่องต่อแถว */
+    gap: 8px; /* ช่องว่างระหว่างช่องในแถว */
+}
+
+.tile {
+    /* *** ลบ 2 บรรทัดนี้ออก *** */
+    /* height: 0; */
+    /* padding-bottom: 100%; */
+    /* ********************** */
+
+    /* *** เพิ่ม 2 บรรทัดนี้แทน *** */
+    width: 100%;
+    aspect-ratio: 1 / 1; /* ทำให้ความสูงเท่ากับความกว้างเสมอ (สี่เหลี่ยมจัตุรัส) */
+    /* หรือถ้าไม่รองรับ aspect-ratio ให้ใช้ height: 60px; (หรือขนาดที่คุณต้องการ) */
+    /* height: 60px; */ /* ตัวอย่าง: กำหนดความสูงตายตัว ถ้า aspect-ratio ไม่ทำงาน */
+    /* **************************** */
+
+    background-color: var(--color-tile-empty);
+/*    border: 2px solid var(--color-tile-border);*/
+
+    display: flex;
+    justify-content: center; /* จัดเนื้อหาในแนวนอนให้อยู่กึ่งกลาง */
+    align-items: center;   /* จัดเนื้อหาในแนวตั้งให้อยู่กึ่งกลาง */
+
+    font-size: 2em;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 20px;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.1s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* เพิ่ม Media Query สำหรับปรับขนาด font-size ของ Tile บนมือถือ */
+@media (max-width: 600px) {
+    .tile {
+        font-size: 1.5em; /* ลดขนาด font-size ลงมาเล็กน้อย */
+        /* ถ้าใช้ height: 60px; อาจจะต้องปรับ height ด้วย */
+        /* height: 50px; */
+    }
+}
+
+/* @media (max-width: 400px) { ... } ก็อาจจะต้องปรับ font-size ใน .tile ด้วย */
+
+/* สไตล์เมื่อช่องมีตัวอักษร */
+.tile.filled {
+    background-color: var(--color-tile-filled);
+    border-color: var(--color-tile-filled);
+}
+
+/* สไตล์เมื่อตัวอักษรถูกต้อง (ตำแหน่งถูก) */
+.tile.correct {
+    background-color: var(--color-correct);
+    color: #5bb253; 
+    border: 4px solid;
+    border-color: #5bb253;
+}
+
+/* สไตล์เมื่อตัวอักษรมีอยู่ในคำแต่ผิดตำแหน่ง */
+.tile.present {
+    background-color: var(--color-present);
+    color: #feae2a;
+    border: 4px solid;
+    border-color: #feae2a;
+}
+
+/* สไตล์เมื่อตัวอักษรไม่มีอยู่ในคำ */
+.tile.absent {
+    background-color: var(--color-absent);
+    border-color: var(--color-absent);
+    color: #e3e3e3;
+}
+
+/* Animation for flipping tiles (optional, but nice) */
+.tile.flip {
+    transform: rotateX(360deg); /* หรือ 180deg แล้วค่อยเปลี่ยนสี */
+}
+
+
+/* --- Keyboard Styles --- */
+#keyboard-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* ช่องว่างระหว่างแถวคีย์บอร์ด */
+    align-items: center;
+    margin-top: 20px;
+}
+
+.keyboard-row {
+    display: flex;
+    gap: 6px; /* ช่องว่างระหว่างปุ่ม */
+    justify-content: center;
+    width: 100%;
+}
+
+.key {
+    background-color: var(--color-key-background);
+    color: var(--color-key-text);
+    border: none;
+    border-radius: 20px;
+    font-size: 1em;
+    font-weight: bold;
+    padding: 13px 10px;
+    cursor: pointer;
+    flex: 1; /* ทำให้ปุ่มขยายเต็มพื้นที่เท่าๆ กัน */
+    min-width: 30px; /* ขนาดต่ำสุดของปุ่ม */
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    text-transform: uppercase; /* ตัวพิมพ์ใหญ่ */
+    text-align: center;
+}
+
+.key:hover {
+    background-color: #9c9da0; /* สีเข้มขึ้นเมื่อ hover */
+}
+
+.key:active {
+    transform: translateY(1px); /* กดแล้วดูเหมือนยุบลงเล็กน้อย */
+}
+
+.key.submit-key {
+    background-color: var(--color-tile-filled);
+    display: flex; 
+    padding: 13px 36px;
+    justify-content: center; 
+}
+
+.key.large-key {
+    display: flex; 
+    padding: 13px 36px;
+    justify-content: center; 
+}
+
+/* สไตล์ปุ่มคีย์บอร์ดเมื่อตัวอักษรถูกต้อง/มี/ไม่มี */
+.key.correct {
+    background-color: #5bb253;
+    color: white;
+}
+.key.present {
+    background-color: #5bb253;
+    color: white;
+}
+.key.absent {
+    background-color: var(--color-absent);
+    color: #e3e3e3;
+}
+
+/* --- Message Container --- */
+#message-container {
+    margin-top: 20px;
+    min-height: 40px; /* กำหนดความสูงขั้นต่ำเพื่อป้องกันการกระโดดของเลย์เอาต์ */
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: center;
+    color: var(--color-background);
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 2em;
+    }
+
+    .tile {
+        font-size: 1.8em;
+    }
+
+    .key {
+        font-size: 0.9em;
+        padding: 12px 8px;
+    }
+
+    .key.large-key {
+        padding: 12px 10px;
+    }
+
+    #game-board {
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 400px) {
+    .container {
+        padding: 10px;
+    }
+    .tile {
+        font-size: 1.5em;
+    }
+    .key {
+        font-size: 0.8em;
+        padding: 10px 5px;
+    }
 }

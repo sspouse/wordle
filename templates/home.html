@@ -1,8 +1,21 @@
 <!DOCTYPE html>
-<html>
-<head><title>Wordle Home</title></head>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordle Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+15&display=swap" rel="stylesheet">
+    </head>
 <body>
-  <h1>Welcome to Wordle Mini</h1>
-  <a href="{{ url_for('start_game') }}"><button>Start Game</button></a>
+  <div class="container">
+    <h1>Welcome to Wordle</h1>
+
+    <a href="{{ url_for('start_game') }}"><button class="key">Start Game</button></a>
+  </div>
 </body>
 </html>
+
+
